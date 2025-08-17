@@ -1,56 +1,50 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Permission as SpatiePermission; // <--- alias it
+use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth','role:admin']); // only admin can manage permissions
-    }
-
     public function index()
     {
-        $permissions = SpatiePermission::all();
-        return view('permissions.index', compact('permissions'));
+        $permissions = Permission::all();
+        return view('admin.permissions.index', compact('permissions'));
     }
 
     public function create()
     {
-        return view('permissions.create');
+        return view('admin.permissions.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|unique:permissions,name'
+            'name' => 'required|unique:permissions',
         ]);
 
-        SpatiePermission::create(['name' => $request->name]);
-
+        Permission::create(['name' => $request->name]);
         return redirect()->route('permissions.index')->with('success', 'Permission created successfully.');
     }
 
     public function edit(Permission $permission)
     {
-        return view('permissions.edit', compact('permission'));
+        return view('admin.permissions.edit', compact('permission'));
     }
 
-    public function update(Request $request, SpatiePermission $permission)
+    public function update(Request $request, Permission $permission)
     {
         $request->validate([
-            'name' => 'required|unique:permissions,name,' . $permission->id
+            'name' => 'required|unique:permissions,name,'.$permission->id,
         ]);
 
         $permission->update(['name' => $request->name]);
-
         return redirect()->route('permissions.index')->with('success', 'Permission updated successfully.');
     }
 
-    public function destroy(SpatiePermission $permission)
+    public function destroy(Permission $permission)
     {
         $permission->delete();
         return redirect()->route('permissions.index')->with('success', 'Permission deleted successfully.');

@@ -49,7 +49,7 @@
                         @auth
                             @role('admin')
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                                    <a class="nav-link" href="#">
                                         <i class="fa fa-tachometer-alt"></i> Admin Dashboard
                                     </a>
                                 </li>
