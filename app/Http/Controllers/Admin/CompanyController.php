@@ -16,6 +16,7 @@ class CompanyController extends Controller
         $this->middleware('permission:company.update')->only(['edit','update']);
         $this->middleware('permission:company.delete')->only(['destroy']);
     }
+    
     public function index()
     {
         $companies = Company::latest()->paginate(10);
