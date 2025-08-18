@@ -68,12 +68,22 @@
                                         <i class="fa fa-key"></i> Permissions
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('companies.index') }}">
+                                        <i class="fa fa-key"></i> Company
+                                    </a>
+                                </li>
                             @endrole
 
                             @role('user')
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('user.dashboard') }}">
+                                    <a class="nav-link" href="#">
                                         <i class="fa fa-home"></i> User Dashboard
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('companies.index') }}">
+                                        <i class="fa fa-key"></i> Company
                                     </a>
                                 </li>
                             @endrole

@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\User\UserDashboardController;
 /*
 |--------------------------------------------------------------------------
@@ -43,3 +44,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 // Route::get('/user/dashboard', [UserDashboardController::class, 'index'])
 //     ->name('user.dashboard')
 //     ->middleware(['auth', 'role:user']);
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('companies', CompanyController::class);
+});
