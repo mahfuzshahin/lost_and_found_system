@@ -3,20 +3,98 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schema;
+use App\Models\License;
 use App\Models\User;
 use App\Models\Company;
-use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Hash;
+
 class InstallController extends Controller
 {
-
     public function showForm()
     {
+        // Run migrations first (creates all tables including licenses)
+        Artisan::call('migrate', ['--force' => true]);
+
+        // Now it's safe to check license
+        if (Schema::hasTable('licenses') && License::where('used', true)->exists()) {
+            return redirect('/')->with('error', 'System is already installed.');
+        }
+
         return view('install.form');
     }
 
     public function runInstall(Request $request)
+    {
+        $request->validate([
+            'license_key' => 'required|string',
+            'company_name' => 'required|string|max:255',
+            'admin_name' => 'required|string|max:255',
+            'admin_email' => 'required|email',
+            'admin_password' => 'required|string|min:6',
+        ]);
+
+        // Make sure the licenses table exists
+        if (!Schema::hasTable('licenses')) {
+            Artisan::call('migrate', ['--force' => true]);
+        }
+
+        $license = License::where('license_key', $request->license_key)
+                        ->where('used', false)
+                        ->first();
+
+        if (!$license) {
+            return back()->withErrors(['License key is invalid or already used.']);
+        }
+
+        try {
+            // Run migrations (normal, not fresh)
+            Artisan::call('migrate', ['--force' => true]);
+
+            // Seed roles & permissions
+            Artisan::call('db:seed', ['--force' => true]);
+
+            // Create Company
+            $company = Company::create([
+                'name' => $request->company_name,
+            ]);
+
+            // Create Admin User
+            $admin = User::create([
+                'name' => $request->admin_name,
+                'email' => $request->admin_email,
+                'password' => Hash::make($request->admin_password),
+            ]);
+
+            // Assign Admin Role
+            $adminRole = Role::firstOrCreate(['name' => 'admin']);
+            $admin->assignRole($adminRole);
+
+            // Mark license as used & bind to server
+            $license->update([
+                'used' => true,
+                'domain' => $_SERVER['SERVER_NAME'],
+            ]);
+
+            return redirect()->route('login')->with('success', 'System installed successfully!');
+
+        } catch (\Exception $e) {
+            // Show detailed error in debug mode
+            if (config('app.debug')) {
+                return back()->withErrors(['error' => $e->getMessage()]);
+            }
+            return back()->withErrors(['error' => 'Installation failed. Please check logs.']);
+        }
+    }
+
+    public function showFormTest()
+    {
+        return view('install.form');
+    }
+
+    public function runInstallTest(Request $request)
     {
         $request->validate([
             'company_name' => 'required|string|max:255',

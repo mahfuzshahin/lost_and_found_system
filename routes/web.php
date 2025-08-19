@@ -54,3 +54,10 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/install', [InstallController::class, 'showForm'])->name('install.form');
 Route::post('/install', [InstallController::class, 'runInstall'])->name('install.run');
+
+Route::prefix('licenses')->middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/', [LicenseController::class, 'index'])->name('licenses.index');
+    Route::get('/create', [LicenseController::class, 'create'])->name('licenses.create');
+    Route::post('/store', [LicenseController::class, 'store'])->name('licenses.store');
+    Route::get('/export', [LicenseController::class, 'export'])->name('licenses.export');
+});
