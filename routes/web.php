@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\User\UserDashboardController;
+use App\Http\Controllers\InstallController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -48,3 +49,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::resource('companies', CompanyController::class);
 });
+
+// Route::get('/install', [InstallController::class, 'index'])->name('install');
+
+Route::get('/install', [InstallController::class, 'showForm'])->name('install.form');
+Route::post('/install', [InstallController::class, 'runInstall'])->name('install.run');
