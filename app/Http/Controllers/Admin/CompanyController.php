@@ -16,6 +16,36 @@ class CompanyController extends Controller
         $this->middleware('permission:company.update')->only(['edit','update']);
         $this->middleware('permission:company.delete')->only(['destroy']);
     }
+    // public function __construct()
+    // {
+    //     $actions = [
+    //         'index'   => 'view',
+    //         'show'    => 'view',
+    //         'create'  => 'create',
+    //         'store'   => 'create',
+    //         'edit'    => 'update',
+    //         'update'  => 'update',
+    //         'destroy' => 'delete',
+    //     ];
+
+    //     foreach ($actions as $method => $action) {
+    //         $this->middleware(function ($request, $next) use ($method, $action) {
+    //             $model = $this->getModelName();
+    //             $permission = strtolower($model) . '.' . $action;
+
+    //             if (!auth()->user()->can($permission)) {
+    //                 abort(403, 'Unauthorized');
+    //             }
+
+    //             return $next($request);
+    //         })->only($method);
+    //     }
+    // }
+
+    // protected function getModelName()
+    // {
+    //     return str_replace('Controller', '', class_basename($this));
+    // }
     
     public function index()
     {

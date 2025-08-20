@@ -48,11 +48,11 @@
                     <ul class="navbar-nav me-auto">
                         @auth
                             @role('admin')
-                                <li class="nav-item">
+                                <!-- <li class="nav-item">
                                     <a class="nav-link" href="#">
                                         <i class="fa fa-tachometer-alt"></i> Admin Dashboard
                                     </a>
-                                </li>
+                                </li> -->
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('users.index') }}">
                                         <i class="fa fa-users"></i> Users

@@ -15,17 +15,32 @@ class RolePermissionSeeder extends Seeder
     public function run()
     {
         // Create permissions
-        $permissions = ['manage users', 'manage roles', 'manage permissions'];
+        $permissions = ['company.view', 'company.create', 'company.update', 'company.delete'];
 
-        foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+        // 2️⃣ Create permissions explicitly with guard_name
+        foreach ($permissions as $permName) {
+            Permission::updateOrCreate(
+                ['name' => $permName],
+                ['guard_name' => 'web']
+            );
         }
 
-        // Create roles and assign permissions
-        $adminRole = Role::firstOrCreate(['name' => 'admin']);
-        $adminRole->givePermissionTo(Permission::all());
+        // 3️⃣ Create admin role with guard_name
+        $adminRole = Role::updateOrCreate(
+            ['name' => 'admin'],
+            ['guard_name' => 'web']
+        );
 
-        $userRole = Role::firstOrCreate(['name' => 'user']);
-        $userRole->givePermissionTo('manage users'); // optional
+        // 4️⃣ Sync all permissions to admin role
+        $adminRole->syncPermissions(Permission::where('guard_name', 'web')->get());
+
+        // 5️⃣ Create user role
+        $userRole = Role::updateOrCreate(
+            ['name' => 'user'],
+            ['guard_name' => 'web']
+        );
+
+        // 6️⃣ Give only view permission to user
+        $userRole->syncPermissions(['company.view']);
     }
 }

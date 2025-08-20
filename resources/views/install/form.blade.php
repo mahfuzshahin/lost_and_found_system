@@ -13,10 +13,10 @@
     <form method="POST" action="{{ route('install.run') }}">
         @csrf
 
-        <div class="form-group mt-2">
+        <!-- <div class="form-group mt-2">
             <label>License Key</label>
             <input type="text" name="license_key" class="form-control" placeholder="Enter your license key" required>
-        </div>
+        </div> -->
 
         <div class="form-group mt-2">
             <label>Company Name</label>
