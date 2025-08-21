@@ -3,7 +3,10 @@
 @section('content')
 <div class="container">
     <h2>Users</h2>
+    
+    @can('admin')
     <a href="{{ route('users.create') }}" class="btn btn-success mb-3">Create User</a>
+    @endcan
     <table class="table table-bordered">
     <tr>
         <th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Action</th>

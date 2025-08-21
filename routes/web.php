@@ -59,7 +59,7 @@ Route::middleware(['check.installation'])->group(function () {
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-    Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::middleware(['auth'])->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('roles', RoleController::class);
         Route::resource('permissions', PermissionController::class);

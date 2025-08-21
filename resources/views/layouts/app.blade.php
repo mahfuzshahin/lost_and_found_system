@@ -46,49 +46,45 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
-                        @auth
-                            @role('admin')
-                                <!-- <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <i class="fa fa-tachometer-alt"></i> Admin Dashboard
-                                    </a>
-                                </li> -->
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('users.index') }}">
-                                        <i class="fa fa-users"></i> Users
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('roles.index') }}">
-                                        <i class="fa fa-user-shield"></i> Roles
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('permissions.index') }}">
-                                        <i class="fa fa-key"></i> Permissions
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('companies.index') }}">
-                                        <i class="fa fa-key"></i> Company
-                                    </a>
-                                </li>
-                            @endrole
+                    @auth
+                        {{-- Users Menu --}}
+                        @can('user.view')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('users.index') }}">
+                                    <i class="fa fa-users"></i> Users
+                                </a>
+                            </li>
+                        @endcan
 
-                            @role('user')
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <i class="fa fa-home"></i> User Dashboard
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('companies.index') }}">
-                                        <i class="fa fa-key"></i> Company
-                                    </a>
-                                </li>
-                            @endrole
-                        @endauth
-                    </ul>
+                        {{-- Roles Menu --}}
+                        @can('role.view')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('roles.index') }}">
+                                    <i class="fa fa-user-shield"></i> Roles
+                                </a>
+                            </li>
+                        @endcan
+
+                        {{-- Permissions Menu --}}
+                        @can('permission.view')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('permissions.index') }}">
+                                    <i class="fa fa-key"></i> Permissions
+                                </a>
+                            </li>
+                        @endcan
+
+                        {{-- Company Menu --}}
+                        @can('company.view')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('companies.index') }}">
+                                    <i class="fa fa-building"></i> Company
+                                </a>
+                            </li>
+                        @endcan
+                    @endauth
+                </ul>
+
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
