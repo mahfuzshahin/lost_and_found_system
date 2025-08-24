@@ -4,7 +4,7 @@
 <div class="container">
     <h2>Users</h2>
     
-    @can('admin')
+    @can('user.create')
     <a href="{{ route('users.create') }}" class="btn btn-success mb-3">Create User</a>
     @endcan
     <table class="table table-bordered">
