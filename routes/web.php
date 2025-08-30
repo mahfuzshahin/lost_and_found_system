@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\LostItemController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InstallController;
 
@@ -67,6 +68,13 @@ Route::middleware(['check.installation'])->group(function () {
 
     Route::middleware(['auth'])->group(function () {
         Route::resource('companies', CompanyController::class);
+    });
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/lost-item', [LostItemController::class, 'lost_item'])->name('lost.item');
+        Route::get('/lost-item-create', [LostItemController::class, 'lost_item_create'])->name('lost.item.create');
+        Route::post('/lost-item-store', [LostItemController::class, 'lost_item_store'])->name('lost.item.store');
+        Route::get('/lost-item-edit/{id}', [LostItemController::class, 'lost_item_edit'])->name('lost.item.edit');
+        Route::post('/lost-item/{id}/update', [LostItemController::class, 'lost_item_update'])->name('lost.item.update');
     });
 });
 
