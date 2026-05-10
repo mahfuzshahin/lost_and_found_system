@@ -1,152 +1,266 @@
-<!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Dashboard')</title>
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="https://cdn.tailwindcss.com"></script>
 
-    <title>{{ config('app.name', 'Laravel RBAC') }}</title>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4f46e5',
+                        primaryHover: '#4338ca',
+                        sidebar: '#1e1b4b',
+                        surface: '#ffffff',
+                        background: '#f8fafc',
+                    }
+                }
+            }
+        }
+    </script>
 
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-
-    <!-- Bootstrap CSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Optional: Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
-
-    <style>
-    body {
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-    }
-
-    main {
-        flex: 1;
-    }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body>
-    <div id="app">
-        <!-- Navbar -->
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel RBAC') }}
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+<body class="text-slate-800 bg-background flex h-screen overflow-hidden">
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
-                        @auth
-                        {{-- Users Menu --}}
-                        @can('user.view')
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('users.index') }}">
-                                <i class="fa fa-users"></i> Users
-                            </a>
-                        </li>
-                        @endcan
+    {{-- Sidebar --}}
+    @auth
+    @include('partials.sidebar')
+    @endauth
 
-                        {{-- Roles Menu --}}
-                        @can('role.view')
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('roles.index') }}">
-                                <i class="fa fa-user-shield"></i> Roles
-                            </a>
-                        </li>
-                        @endcan
-
-                        {{-- Permissions Menu --}}
-                        @can('permission.view')
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('permissions.index') }}">
-                                <i class="fa fa-key"></i> Permissions
-                            </a>
-                        </li>
-                        @endcan
-
-                        {{-- Company Menu --}}
-                        @can('company.view')
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('companies.index') }}">
-                                <i class="fa fa-building"></i> Company
-                            </a>
-                        </li>
-                        @endcan
-                        {{-- Item Menu --}}
-                        @can('item.view')
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('lost.item') }}">
-                                <i class="fa fa-building"></i> Lost Item
-                            </a>
-                        </li>
-                        @endcan
-                        @endauth
-                    </ul>
-
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
-                        @guest
-                        @if (Route::has('login'))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                        </li>
-                        @endif
-
-                        @if (Route::has('register'))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                        </li>
-                        @endif
-                        @else
-                        <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->name }}
-                            </a>
-
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('logout') }}"
-                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    {{ __('Logout') }}
-                                </a>
-
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                    @csrf
-                                </form>
-                            </div>
-                        </li>
-                        @endguest
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Main Content -->
-        <main class="py-4">
+    <div class="flex-1 flex flex-col h-screen overflow-hidden">
+        @auth
+        @include('partials.header')
+        @endauth
+        {{-- Main Content --}}
+        <main class="@auth flex-1 overflow-y-auto p-4 lg:p-8 @else flex items-center justify-center min-h-screen @endauth">
             @yield('content')
         </main>
     </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
 
-    <!-- Bootstrap JS Bundle CDN (includes Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
 
-    <!-- Optional: jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+        if (userMenuBtn && userDropdown) {
+
+            userMenuBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+
+                userDropdown.classList.toggle('hidden');
+                userDropdown.classList.toggle('opacity-0');
+                userDropdown.classList.toggle('scale-95');
+                userDropdown.classList.toggle('opacity-100');
+                userDropdown.classList.toggle('scale-100');
+            });
+
+            document.addEventListener('click', function (e) {
+
+                if (
+                    !userMenuBtn.contains(e.target) &&
+                    !userDropdown.contains(e.target)
+                ) {
+                    userDropdown.classList.add('hidden');
+                    userDropdown.classList.remove('opacity-100', 'scale-100');
+                    userDropdown.classList.add('opacity-0', 'scale-95');
+                }
+            });
+        }
+    });
+</script>
+<script>
+        // Sidebar Toggle Logic
+        const sidebar = document.getElementById('sidebar');
+        const openBtn = document.getElementById('openSidebar');
+        const closeBtn = document.getElementById('closeSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        function openSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
+            // Small delay to allow display block to apply before changing opacity
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+            }, 10);
+        }
+
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('opacity-0');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 300); // match transition duration
+        }
+
+        openBtn.addEventListener('click', openSidebar);
+        closeBtn.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+
+        // User Dropdown Logic
+        const userMenuBtn = document.getElementById('userMenuBtn');
+        const userDropdown = document.getElementById('userDropdown');
+
+        userMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (userDropdown.classList.contains('hidden')) {
+                userDropdown.classList.remove('hidden');
+                setTimeout(() => {
+                    userDropdown.classList.remove('opacity-0', 'scale-95');
+                    userDropdown.classList.add('opacity-100', 'scale-100');
+                }, 10);
+            } else {
+                userDropdown.classList.remove('opacity-100', 'scale-100');
+                userDropdown.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    userDropdown.classList.add('hidden');
+                }, 200);
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                if (!userDropdown.classList.contains('hidden')) {
+                    userDropdown.classList.remove('opacity-100', 'scale-100');
+                    userDropdown.classList.add('opacity-0', 'scale-95');
+                    setTimeout(() => {
+                        userDropdown.classList.add('hidden');
+                    }, 200);
+                }
+            }
+        });
+
+        // Sidebar Nav Dropdown Logic
+        const productsMenuBtn = document.getElementById('productsMenuBtn');
+        const productsSubmenu = document.getElementById('productsSubmenu');
+        const productsMenuChevron = document.getElementById('productsMenuChevron');
+
+        if (productsMenuBtn) {
+            productsMenuBtn.addEventListener('click', () => {
+                productsSubmenu.classList.toggle('hidden');
+                productsSubmenu.classList.toggle('flex');
+                productsMenuChevron.classList.toggle('rotate-180');
+            });
+        }
+
+        // Chart.js Configuration
+        document.addEventListener('DOMContentLoaded', function () {
+            // Main Revenue Line Chart
+            const ctx1 = document.getElementById('revenueChart').getContext('2d');
+
+            // Create gradient
+            let gradient = ctx1.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(79, 70, 229, 0.5)'); // Indigo 600
+            gradient.addColorStop(1, 'rgba(79, 70, 229, 0.0)');
+
+            new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Revenue',
+                        data: [15000, 22000, 18000, 28000, 25000, 32000, 38000, 34000, 42000, 48000, 50000, 54239],
+                        borderColor: '#4f46e5',
+                        backgroundColor: gradient,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#4f46e5',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            padding: 12,
+                            titleFont: { size: 13, family: 'Inter' },
+                            bodyFont: { size: 14, weight: 'bold', family: 'Inter' },
+                            callbacks: {
+                                label: function (context) {
+                                    return '$' + context.parsed.y.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#f1f5f9',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: { family: 'Inter' },
+                                callback: function (value) {
+                                    return '$' + value / 1000 + 'k';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: { family: 'Inter' }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Traffic Doughnut Chart
+            const ctx2 = document.getElementById('doughnutChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Direct', 'Organic', 'Social'],
+                    datasets: [{
+                        data: [45, 30, 25],
+                        backgroundColor: [
+                            '#4f46e5', // Primary
+                            '#38bdf8', // Sky 400
+                            '#34d399'  // Emerald 400
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            padding: 10,
+                            bodyFont: { family: 'Inter' }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

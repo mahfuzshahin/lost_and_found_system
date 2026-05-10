@@ -1,44 +1,62 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-5">
-    <h2>Interactive Installation</h2>
+<div class="min-h-screen flex items-center justify-center bg-background">
 
-    @if($errors->any())
-        <div class="alert alert-danger">
-            {{ $errors->first() }}
-        </div>
-    @endif
+    <div class="w-full max-w-xl bg-white rounded-2xl shadow-lg border border-slate-100 p-8">
 
-    <form method="POST" action="{{ route('install.run') }}">
-        @csrf
+        <h2 class="text-2xl font-bold text-slate-800 mb-6 text-center">
+            Interactive Installation
+        </h2>
 
-        <!-- <div class="form-group mt-2">
-            <label>License Key</label>
-            <input type="text" name="license_key" class="form-control" placeholder="Enter your license key" required>
-        </div> -->
+        @if($errors->any())
+            <div class="mb-4 p-3 rounded-lg bg-red-50 text-red-600 text-sm border border-red-200">
+                {{ $errors->first() }}
+            </div>
+        @endif
 
-        <div class="form-group mt-2">
-            <label>Company Name</label>
-            <input type="text" name="company_name" class="form-control" required>
-        </div>
+        <form method="POST" action="{{ route('install.run') }}" class="space-y-4">
+            @csrf
 
-        <div class="form-group mt-2">
-            <label>Admin Name</label>
-            <input type="text" name="admin_name" class="form-control" required>
-        </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">
+                    Company Name
+                </label>
+                <input type="text" name="company_name" required
+                    class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition">
+            </div>
 
-        <div class="form-group mt-2">
-            <label>Admin Email</label>
-            <input type="email" name="admin_email" class="form-control" required>
-        </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">
+                    Admin Name
+                </label>
+                <input type="text" name="admin_name" required
+                    class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition">
+            </div>
 
-        <div class="form-group mt-2">
-            <label>Admin Password</label>
-            <input type="password" name="admin_password" class="form-control" required>
-        </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">
+                    Admin Email
+                </label>
+                <input type="email" name="admin_email" required
+                    class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition">
+            </div>
 
-        <button class="btn btn-primary mt-3 w-100">Install</button>
-    </form>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">
+                    Admin Password
+                </label>
+                <input type="password" name="admin_password" required
+                    class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition">
+            </div>
+
+            <button type="submit"
+                class="w-full bg-primary hover:bg-primaryHover text-white font-semibold py-3 rounded-lg transition shadow-sm">
+                Install
+            </button>
+
+        </form>
+    </div>
+
 </div>
 @endsection
