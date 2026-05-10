@@ -32,6 +32,13 @@
             </a>
         </li>
         @endcan
+        @can('lost_item.view')
+        <li class="nav-item">
+            <a href="{{ route('lost.item') }}" class="nav-link text-white">
+                <i class="fas fa-building"></i> Lost Items
+            </a>
+        </li>
+        @endcan
 
     </ul>
 </aside>
